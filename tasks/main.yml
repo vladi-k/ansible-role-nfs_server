@@ -1,0 +1,36 @@
+---
+- name: Install NFS server packages
+  ansible.builtin.package:
+    name: "{{ nfs_server_packages }}"
+
+- name: Configure nfs.conf
+  ansible.builtin.ini_file:
+    path: "{{ nfs_server_conf_path }}"
+    option: "{{ item.option }}"
+    value: "{{ item.value }}"
+    section: "{{ item.section }}"
+    no_extra_spaces: true
+    owner: root
+    group: root
+    mode: '0644'
+  loop: "{{ nfs_server_conf }}"
+  notify:
+    - restart nfs-server
+
+- name: Generate /etc/exports
+  ansible.builtin.template:
+    src: etc/exports
+    dest: /etc/exports
+    owner: root
+    group: root
+    mode: '0644'
+  when: nfs_server_exports | list
+  notify:
+    - exportfs
+
+- name: Start and enable nfs daemon
+  ansible.builtin.service:
+    name: "{{ nfs_server_daemon }}"
+    state: started
+    enabled: true
+  when: nfs_server_enable | bool
