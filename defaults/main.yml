@@ -1,0 +1,10 @@
+---
+nfs_server_packages:
+  - nfs-utils
+
+nfs_server_conf_path: /etc/nfs.conf
+nfs_server_conf: []
+nfs_server_daemon: nfs-server
+nfs_server_exports: []
+nfs_server_exportfs_opts: "-rav"
+nfs_server_enable: true

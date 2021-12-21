@@ -1,0 +1,9 @@
+---
+- name: restart nfs-server
+  ansible.builtin.service:
+    name: "{{ nfs_server_daemon }}"
+    state: restarted
+  when: nfs_server_enable | bool
+
+- name: exportfs
+  ansible.builtin.command: "exportfs {{ nfs_server_exportfs_opts }}"
